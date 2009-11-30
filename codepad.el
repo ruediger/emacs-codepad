@@ -97,6 +97,11 @@
   :group 'codepad
   :type 'boolean)
 
+(defcustom codepad-autoset-mode t
+  "Try to determine and set mode for fetched code?"
+  :group 'codepad
+  :type 'boolean)
+
 (defcustom codepad-async t
   "Async retrieve."
   :group 'codepad
@@ -200,6 +205,8 @@ should both be strings."
                                    ("python" . python-mode))
   "MIME text/x-... to emacs mode.")
 
+(defvar url-http-content-type)
+
 ;;;###autoload
 (defun codepad-fetch-code (id &optional buffer-name)
   "Fetch code from codepad.org.
@@ -220,14 +227,13 @@ optional argument is the BUFFER-NAME where to write."
         (let ((header-end (point)))
           (goto-char (point-min))
           ;; Determine and set mode
-          (when (re-search-forward "^[cC]ontent-[tT]ype: \\(.*\\)$"
-                                   header-end t)
-            (let ((content-type (match-string 1)))
-              (when (string-match "text/x-\\([^;[:space:]]*\\)" content-type)
-                (let ((mode (cdr (assoc (match-string 1 content-type)
-                                        +codepad-mime-to-mode+))))
-                  (when mode
-                    (funcall mode))))))
+          (when (and codepad-autoset-mode
+                     url-http-content-type
+                     (string-match "text/x-\\([^;[:space:]]*\\)" url-http-content-type))
+            (let ((mode (cdr (assoc (match-string 1 url-http-content-type)
+                                    +codepad-mime-to-mode+))))
+              (when mode
+                (funcall mode))))
           ;; Delete Headers
           (delete-region (point-min) header-end)
           (set-buffer-modified-p nil))))
