@@ -35,6 +35,7 @@
 ;;; TODO:
 
 ;; * fetch code from codepad.org
+;; * fetch Output from codepad.org (if run is True)
 ;; * support projects (http://project.codepad.org)
 ;; * support user accounts
 

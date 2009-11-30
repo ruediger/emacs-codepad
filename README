@@ -1,0 +1,11 @@
+codepad.el --- Emacs integration for codepad.org
+
+See http://codepad.org
+
+Codepad is a pastebin where you can paste code and share it on a chat or via email. Codepad also provides an online compiler/interpreter and can run your programs online.
+
+emacs-codepad provides an Emacs integration for Codepad. Currently you can use it to paste your code online. But I hope to expand it in the future (see TODO section in codepad.el)
+
+Contributors are welcome!
+
+codepad.el is based on gist.el (http://github.com/defunkt/gist.el/blob/master/gist.el) which was written by Christian Neukirchen and others. codepad.el is written by Rüdiger Sonderfeld. You can contact me via E-Mail: ruediger@c-plusplus.de.
