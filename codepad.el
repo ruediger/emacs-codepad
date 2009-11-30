@@ -252,7 +252,7 @@ optional argument is the BUFFER-NAME where to write."
            (let ((header-end (point)))
              (goto-char (point-min))
              ;; Determine and set mode
-             (when (and codepad-autoset-mode
+             (if (and codepad-autoset-mode
                         url-http-content-type
                         (string-match "text/x-\\([^;[:space:]]*\\)"
                                       url-http-content-type))
@@ -260,8 +260,10 @@ optional argument is the BUFFER-NAME where to write."
                       (cdr (assoc
                             (match-string 1 url-http-content-type)
                             +codepad-mime-to-mode+))))
-                 (when mode
-                   (funcall mode))))
+                 (if mode
+                   (funcall mode)
+                   (fundamental-mode)))
+               (fundamental-mode))
              ;; Delete Headers
              (delete-region (point-min) header-end)
              (set-buffer-modified-p nil)
