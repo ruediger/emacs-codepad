@@ -141,8 +141,8 @@ should both be strings."
   "callback called by url-retrieve or after a synced retreive"
   (goto-char (point-min))
   (re-search-forward "^[lL]ocation: \\(.*\\)$")
-  (message "Paste created: %s" (match-string 1))
   (let ((url (concat +codepad-url+ (match-string 1))))
+    (message "Paste created: %s" url)
     (when codepad-view (browse-url url))
     (kill-new url)
     (kill-buffer (current-buffer))
