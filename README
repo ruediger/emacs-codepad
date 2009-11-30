@@ -9,3 +9,16 @@ emacs-codepad provides an Emacs integration for Codepad. Currently you can use i
 Contributors are welcome!
 
 codepad.el is based on gist.el (http://github.com/defunkt/gist.el/blob/master/gist.el) which was written by Christian Neukirchen and others. codepad.el is written by Rüdiger Sonderfeld. You can contact me via E-Mail: ruediger@c-plusplus.de.
+
+== Installation ==
+Installation is straight forward:
+
+Add the following lines to your ~/.emacs
+
+  (add-to-list 'load-path "PATH") ;; replace PATH with the path to codepad.el
+  (autoload 'codepad-paste-region "codepad" "paste region to codepad.org" t)
+  (autoload 'codepad-paste-buffer "codepad" "paste buffer to codepad.org" t)
+
+Restart Emacs (or evaluate those lines) and you can use codepad.el by calling M-x codepad-paste-region to paste the current selected region or M-x codepad-paste-buffer to paste the current selected buffer.
+
+You can configure codepad.el by calling M-x customize-group codepad
