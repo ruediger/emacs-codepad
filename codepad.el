@@ -232,7 +232,9 @@ URL is the resulted url in the case of success or ERR is an error descriptor."
                                    ("tcl" . tcl-mode))
   "MIME text/x-... to emacs mode.")
 
+;; stuff from url-http.el
 (defvar url-http-content-type)
+(defvar url-http-end-of-headers)
 
 (defvar codepad-id nil "ID on Codepad or nil. Buffer local.")
 
@@ -262,9 +264,7 @@ optional argument is the BUFFER-NAME where to write."
            (setq codepad-id just-id)
 
            ;; Delete Headers
-           (goto-char (point-min))
-           (re-search-forward "\n\n") ; Find end of Headers
-           (delete-region (point-min) (point))
+           (delete-region (point-min) url-http-end-of-headers)
 
            ;; Determine and set mode
            (if (and codepad-autoset-mode
