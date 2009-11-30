@@ -1,6 +1,7 @@
 ;; codepad.el --- Emacs integration for codepad.org
 ;;
 ;; Author: Rüdiger Sonderfeld <ruediger@c-plusplus.de>
+;; Website: http://github.com/ruediger/emacs-codepad
 ;; Keywords: codepad paste pastie pastebin
 ;;
 ;; This code is inspired by gist.el (written by Christian Neukirchen et.al.)
@@ -68,7 +69,7 @@
   :prefix "codepad-"
   :tag "Codepad"
   :group 'external
-  :link '(url-link +codepad-url+))
+  :link '(url-link "http://github.com/ruediger/emacs-codepad"))
 
 (defcustom codepad-private 'ask
   "Private pastes?"
