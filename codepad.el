@@ -102,6 +102,11 @@
   :group 'codepad
   :type 'boolean)
 
+(defcustom codepad-use-x-clipboard t
+  "Copy URL also to the X clipboard?"
+  :group 'codepad
+  :type 'boolean)
+
 (defun codepad-read-p (prompt &optional default)
   "Read true (t,y,true,yes) or false (nil,false,no) from the minibuffer.
 Uses PROMPT as prompt and DEFAULT is the default value."
@@ -147,8 +152,12 @@ should both be strings."
 
 ;;;###autoload
 (defun* codepad-paste-region (begin end
-                              &optional (private 'check-custom))
-  "Paste region to codepad.org."
+                              &optional (private 'check-custom)
+                              callback cbargs)
+  "Paste region to codepad.org.
+Call CALLBACK as (apply CALLBACK
+URL ERR-P CBARGS) where ERR-P is nil and URL is the resulted url
+in the case of success or ERR is an error descriptor."
   (interactive "r")
   (let* ((private (codepad-interactive-option (if (eql private 'check-custom)
                                                   codepad-private
@@ -169,23 +178,30 @@ should both be strings."
              ("lang" . ,lang)
              ("code" . ,(buffer-substring begin end))))))
     (url-retrieve +codepad-url+
-                  (lambda (status)
+                  (lambda (status callback cbargs)
                     (let ((url (plist-get status :redirect))
                           (err (plist-get status :error)))
+                      (when callback
+                        (apply callback url err cbargs))
                       (when err
                         (signal (car err) (cdr err)))
                       (message "Paste created: %s" url)
                       (when codepad-view (browse-url url))
-                      (kill-new url)
+                      (let ((x-select-enable-clipboard
+                             (or codepad-use-x-clipboard
+                                 x-select-enable-clipboard)))
+                        (kill-new url))
                       (kill-buffer (current-buffer))
-                      url)))))
+                      url))
+                  (list callback cbargs))))
 
 ;;;###autoload
 (defun* codepad-paste-buffer (&optional
-                              (private 'check-custom))
-  "Paste buffer to codepad.org."
+                              (private 'check-custom)
+                              callback cbargs)
+  "Paste buffer to codepad.org.  See `codepad-paste-region'."
   (interactive)
-  (codepad-paste-region (point-min) (point-max) private))
+  (codepad-paste-region (point-min) (point-max) private callback cbargs))
 
 (defconst +codepad-mime-to-mode+ '(("c++src" . c++-mode)
                                    ("csrc" . c-mode)
@@ -224,7 +240,7 @@ optional argument is the BUFFER-NAME where to write."
           ;; Delete Headers
           (delete-region (point-min) header-end)
           (set-buffer-modified-p nil))))
-    (switch-to-buffer-other-window buffer)))
+    (pop-to-buffer buffer)))
 
 (provide 'codepad)
 ;;; codepad.el ends here
