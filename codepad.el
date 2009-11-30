@@ -166,3 +166,6 @@ should both be strings."
 
 ;;;###autoload
 (defun codepad-fetch (id))
+
+(provide 'codepad)
+;;; codepad.el ends here
