@@ -142,8 +142,8 @@ PARAMS should be a list with elements of the form (KEY . VALUE).  KEY and VALUE
 should both be strings."
   (mapconcat
    (lambda (param)
-     (concat (codepad-hexify-string (car param)) "="
-             (codepad-hexify-string (cdr param))))
+     (concat (codepad-url-encode (car param)) "="
+             (codepad-url-encode (cdr param))))
    params "&"))
 
 (defun codepad-paste-callback (&rest _)
