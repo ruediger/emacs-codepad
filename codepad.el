@@ -36,7 +36,6 @@
 
 ;; TODO:
 
-;; * fetch code from codepad.org
 ;; * fetch Output from codepad.org (if run is True)
 ;; * support projects (http://project.codepad.org)
 ;; * support user accounts
@@ -196,8 +195,43 @@ should both be strings."
   (interactive)
   (codepad-paste-region (point-min) (point-max) private synchronously))
 
+(defconst +codepad-mime-to-mode+ '(("c++src" . c++-mode)
+                                   ("csrc" . c-mode)
+                                   ("python" . python-mode))
+  "MIME text/x-... to emacs mode.")
+
 ;;;###autoload
-;(defun codepad-fetch (id))
+(defun codepad-fetch-code (id &optional buffer-name)
+  "Fetch code from codepad.org.
+Argument ID is the codepad id and
+optional argument is the BUFFER-NAME where to write."
+  (interactive "sCodepad ID: ")
+  (let* ((just-id (replace-regexp-in-string "^.*/" "" id)) ; strip http://...
+         (buffer-name (or buffer-name (format "*codepad %s*" just-id)))
+         (url (concat +codepad-url+ "/" just-id "/raw"))
+         (buffer (get-buffer buffer-name)))
+    (unless (bufferp buffer)
+      (message "Fetching %s from Codepad" just-id)
+      (setq buffer (url-retrieve-synchronously url))
+      (with-current-buffer buffer
+        (rename-buffer buffer-name t)
+        (goto-char (point-min))
+        (re-search-forward "\n\n")
+        (let ((header-end (point)))
+          (goto-char (point-min))
+          ;; Determine and set mode
+          (when (re-search-forward "^[cC]ontent-[tT]ype: \\(.*\\)$"
+                                   header-end t)
+            (let ((content-type (match-string 1)))
+              (when (string-match "text/x-\\([^;[:space:]]*\\)" content-type)
+                (let ((mode (cdr (assoc (match-string 1 content-type)
+                                        +codepad-mime-to-mode+))))
+                  (when mode
+                    (funcall mode))))))
+          ;; Delete Headers
+          (delete-region (point-min) header-end)
+          (set-buffer-modified-p nil))))
+    (switch-to-buffer-other-window buffer)))
 
 (provide 'codepad)
 ;;; codepad.el ends here

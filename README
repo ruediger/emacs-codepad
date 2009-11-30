@@ -18,6 +18,7 @@ Add the following lines to your ~/.emacs
   (add-to-list 'load-path "PATH") ;; replace PATH with the path to codepad.el
   (autoload 'codepad-paste-region "codepad" "paste region to codepad.org" t)
   (autoload 'codepad-paste-buffer "codepad" "paste buffer to codepad.org" t)
+  (autoload 'codepad-fetch-code "codepad" "Fetch code from codepad.org." t)
 
 Restart Emacs (or evaluate those lines) and you can use codepad.el by calling M-x codepad-paste-region to paste the current selected region or M-x codepad-paste-buffer to paste the current selected buffer.
 
