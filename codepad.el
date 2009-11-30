@@ -74,20 +74,20 @@
 (defcustom codepad-private 'ask
   "Private pastes?"
   :group 'codepad
-  :type '(choice
-          (const 'ask)
-          (const 'prefix)
-          (const 'no)
-          (const 'yes)))
+  :type '(radio
+          (const :tag "Always ask" :value ask)
+          (const :tag "Check prefix" :value prefix)
+          (const :tag "No" :value no)
+          (const :tag "Yes" :value yes)))
 
 (defcustom codepad-run 'yes
   "Run pastes?"
   :group 'codepad
-  :type '(choice
-          (const 'ask)
-          (const 'prefix)
-          (const 'no)
-          (const 'yes)))
+  :type '(radio
+          (const :tag "Always ask" :value ask)
+          (const :tag "Check prefix" :value prefix)
+          (const :tag "No" :value no)
+          (const :tag "Yes" :value yes)))
 
 (defcustom codepad-view t
   "View paste in browser?"
