@@ -158,7 +158,7 @@ should both be strings."
                     (let ((url (concat +codepad-url+ (match-string 1))))
                       (when codepad-view (browse-url url))
                       (kill-new url)
-                      ;(kill-buffer (current-buffer))
+                      (kill-buffer (current-buffer))
                       url)))))
 
 ;;;###autoload
