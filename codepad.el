@@ -206,7 +206,16 @@ in the case of success or ERR is an error descriptor."
 
 (defconst +codepad-mime-to-mode+ '(("c++src" . c++-mode)
                                    ("csrc" . c-mode)
-                                   ("python" . python-mode))
+                                   ("dsrc" . d-mode)
+                                   ("haskell" . haskell-mode)
+                                   ("lua" . lua-mode)
+                                   ("ocaml" . ocaml-mode)
+                                   ("php" . php-mode)
+                                   ("perl" . perl-mode)                                   
+                                   ("python" . python-mode)
+                                   ("ruby" . ruby-mode)
+                                   ("scheme" . scheme-mode)
+                                   ("tcl" . tcl-mode))
   "MIME text/x-... to emacs mode.")
 
 (defvar url-http-content-type)
