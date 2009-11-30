@@ -111,8 +111,8 @@
 (defun codepad-read-p (prompt &optional default)
   "Read true (t,y,true,yes) or false (nil,false,no) from the minibuffer.
 Uses PROMPT as prompt and DEFAULT is the default value."
-  (let ((val (downcase (read-string (concat prompt " [default '"
-                                            (if default "Yes" "No") "']: ")))))
+  (let ((val (downcase (read-string (concat prompt " (default "
+                                            (if default "Yes" "No") "): ")))))
     (cond
       ((string= val "") default)
       ((member val '("t" "y" "true" "yes")) t)
