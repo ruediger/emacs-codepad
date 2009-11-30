@@ -47,7 +47,8 @@
 
 ;;; Code:
 
-(defconst +codepad-url+ "http://codepad.org")
+(defconst +codepad-url+ "http://codepad.org"
+  "url to codepad.org")
 
 (defconst +codepad-lang+ '((c-mode . "C")
                            (c++-mode . "C++")
@@ -60,9 +61,11 @@
                            (python-mode . "Python")
                            (ruby-mode . "Ruby")
                            (scheme-mode . "Scheme")
-                           (tcl-mode . "Tcl")))
+                           (tcl-mode . "Tcl"))
+  "association of major-modes to language names used by codepad.org")
 
-(defconst +codepad-default-lang+ "Plain Text")
+(defconst +codepad-default-lang+ "Plain Text"
+  "language of major-mode is not supported by codepad.org")
 
 (defgroup codepad nil
   "Codepad paste support"
@@ -112,6 +115,7 @@
          (codepad-read-p prompt default)))))
 
 (defun codepad-interactive-option (var prompt)
+  "handle interactive option"
   (case var
     ((ask) (codepad-read-p prompt))
     ((no) nil)
@@ -120,6 +124,7 @@
     (t var)))
 
 (defun codepad-true-or-false (val)
+  "converts `val' into a string True or False"
   (if val
       "True"
       "False"))
