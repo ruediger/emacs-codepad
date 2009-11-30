@@ -102,11 +102,6 @@
   :group 'codepad
   :type 'boolean)
 
-(defcustom codepad-async t
-  "Async retrieve."
-  :group 'codepad
-  :type 'boolean)
-
 (defun codepad-read-p (prompt &optional default)
   "Read true (t,y,true,yes) or false (nil,false,no) from the minibuffer.
 Uses PROMPT as prompt and DEFAULT is the default value."
@@ -150,21 +145,9 @@ should both be strings."
              (codepad-url-encode (cdr param))))
    params "&"))
 
-(defun codepad-paste-callback (&rest _)
-  "Callback called by url-retrieve or after a synced retrieve."
-  (goto-char (point-min))
-  (re-search-forward "^[lL]ocation: \\(.*\\)$")
-  (let ((url (concat +codepad-url+ (match-string 1))))
-    (message "Paste created: %s" url)
-    (when codepad-view (browse-url url))
-    (kill-new url)
-    (kill-buffer (current-buffer))
-    url))
-
 ;;;###autoload
 (defun* codepad-paste-region (begin end
-                              &optional (private 'check-custom)
-                                        (synchronously 'check-custom))
+                              &optional (private 'check-custom))
   "Paste region to codepad.org."
   (interactive "r")
   (let* ((private (codepad-interactive-option (if (eql private 'check-custom)
@@ -185,20 +168,24 @@ should both be strings."
              ("run" . ,(codepad-true-or-false run))
              ("lang" . ,lang)
              ("code" . ,(buffer-substring begin end))))))
-    (when (eql synchronously 'check-custom)
-        (setq synchronously (not codepad-async)))
-    (if synchronously
-        (with-current-buffer (url-retrieve-synchronously +codepad-url+)
-          (codepad-paste-callback))
-        (url-retrieve +codepad-url+ #'codepad-paste-callback))))
+    (url-retrieve +codepad-url+
+                  (lambda (status)
+                    (let ((url (plist-get status :redirect))
+                          (err (plist-get status :error)))
+                      (when err
+                        (signal (car err) (cdr err)))
+                      (message "Paste created: %s" url)
+                      (when codepad-view (browse-url url))
+                      (kill-new url)
+                      (kill-buffer (current-buffer))
+                      url)))))
 
 ;;;###autoload
 (defun* codepad-paste-buffer (&optional
-                              (private 'check-custom)
-                              (synchronously 'check-custom))
+                              (private 'check-custom))
   "Paste buffer to codepad.org."
   (interactive)
-  (codepad-paste-region (point-min) (point-max) private synchronously))
+  (codepad-paste-region (point-min) (point-max) private))
 
 (defconst +codepad-mime-to-mode+ '(("c++src" . c++-mode)
                                    ("csrc" . c-mode)
