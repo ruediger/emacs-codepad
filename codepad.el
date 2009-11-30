@@ -41,11 +41,6 @@
 ;; * support projects (http://project.codepad.org)
 ;; * support user accounts
 
-;; Idea:
-
-;; add a local variable to each buffer with (a list?) of codepad ids so you
-;; new pastes from this buffer are added as a reply to the original paste.
-
 ;;; Code:
 
 (defconst +codepad-url+ "http://codepad.org"
@@ -103,6 +98,11 @@
   :group 'codepad
   :type 'boolean)
 
+(defcustom codepad-autofork t
+  "Create new pastes as a fork of `codepad-id'?"
+  :group 'codepad
+  :type 'boolean)
+
 (defcustom codepad-use-x-clipboard t
   "Copy URL also to the X clipboard?"
   :group 'codepad
@@ -154,13 +154,27 @@ should both be strings."
 ;;;###autoload
 (defun* codepad-paste-region (begin end
                               &optional (private 'check-custom)
+                              (fork 'check-custom)
                               callback cbargs)
   "Paste region to codepad.org.
-Call CALLBACK as (apply CALLBACK
-URL ERR-P CBARGS) where ERR-P is nil and URL is the resulted url
-in the case of success or ERR is an error descriptor."
+If PRIVATE is set the pase will be private.
+If FORK is set to an id the paste will be created as a fork of this paste.
+If FORK is set to 'auto (or to check-custom and codepad-autofork is t) it
+will fork the paste in `codepad-id'.
+Call CALLBACK as (apply CALLBACK URL ERR-P CBARGS) where ERR-P is nil and
+URL is the resulted url in the case of success or ERR is an error descriptor."
   (interactive "r")
-  (let* ((private (codepad-interactive-option (if (eql private 'check-custom)
+  (let* ((codepad-url (cond
+                        ((and
+                          (or (eql fork 'auto)
+                              (and (eql fork 'check-custom)
+                                   codepad-autofork))
+                          (stringp codepad-id))
+                         (format "%s/%s/fork" +codepad-url+ codepad-id))
+                        ((stringp fork)
+                         (format "%s/%s/fork" +codepad-url+ fork))
+                        (t +codepad-url+)))
+         (private (codepad-interactive-option (if (eql private 'check-custom)
                                                   codepad-private
                                                   private)
                                               "Private Paste?"))
@@ -178,7 +192,7 @@ in the case of success or ERR is an error descriptor."
              ("run" . ,(codepad-true-or-false run))
              ("lang" . ,lang)
              ("code" . ,(buffer-substring begin end))))))
-    (url-retrieve +codepad-url+
+    (url-retrieve codepad-url
                   (lambda (status callback cbargs)
                     (let ((url (plist-get status :redirect))
                           (err (plist-get status :error)))
@@ -199,6 +213,7 @@ in the case of success or ERR is an error descriptor."
 ;;;###autoload
 (defun* codepad-paste-buffer (&optional
                               (private 'check-custom)
+                              (fork 'check-custom)
                               callback cbargs)
   "Paste buffer to codepad.org.  See `codepad-paste-region'."
   (interactive)
