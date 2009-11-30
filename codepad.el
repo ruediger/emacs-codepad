@@ -117,8 +117,7 @@ Uses PROMPT as prompt and DEFAULT is the default value."
       ((string= val "") default)
       ((member val '("t" "y" "true" "yes")) t)
       ((member val '("nil" "f" "n" "false" "no")) nil)
-      (t (message (concat "Wrong input '" val
-                          "'! Please enter either Yes or No"))
+      (t (message "Wrong input '%s'! Please enter either Yes or No" val)
          (codepad-read-p prompt default)))))
 
 (defun codepad-interactive-option (var prompt)
