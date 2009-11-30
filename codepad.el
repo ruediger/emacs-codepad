@@ -1,6 +1,7 @@
 ;; codepad.el --- Emacs integration for codepad.org
 ;;
 ;; Author: Rüdiger Sonderfeld <ruediger@c-plusplus.de>
+;; Contributors: Thomas Weidner <thomas001le@gmail.com>
 ;; Website: http://github.com/ruediger/emacs-codepad
 ;; Created: <2009-11-29>
 ;; Keywords: codepad paste pastie pastebin
