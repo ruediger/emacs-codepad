@@ -99,7 +99,7 @@
   :type 'boolean)
 
 (defcustom codepad-async t
-  "Async retreive."
+  "Async retrieve."
   :group 'codepad
   :type 'boolean)
 
@@ -147,7 +147,7 @@ should both be strings."
    params "&"))
 
 (defun codepad-paste-callback (&rest _)
-  "Callback called by url-retrieve or after a synced retreive."
+  "Callback called by url-retrieve or after a synced retrieve."
   (goto-char (point-min))
   (re-search-forward "^[lL]ocation: \\(.*\\)$")
   (let ((url (concat +codepad-url+ (match-string 1))))
