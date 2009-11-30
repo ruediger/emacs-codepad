@@ -2,6 +2,7 @@
 ;;
 ;; Author: Rüdiger Sonderfeld <ruediger@c-plusplus.de>
 ;; Website: http://github.com/ruediger/emacs-codepad
+;; Created: <2009-11-29>
 ;; Keywords: codepad paste pastie pastebin
 ;;
 ;; This code is inspired by gist.el (written by Christian Neukirchen et.al.)
@@ -33,14 +34,14 @@
 ;;
 ;; codepad-paste-buffer pastes the whole buffer.
 
-;;; TODO:
+;; TODO:
 
 ;; * fetch code from codepad.org
 ;; * fetch Output from codepad.org (if run is True)
 ;; * support projects (http://project.codepad.org)
 ;; * support user accounts
 
-;;; Idea:
+;; Idea:
 
 ;; add a local variable to each buffer with (a list?) of codepad ids so you
 ;; new pastes from this buffer are added as a reply to the original paste.
