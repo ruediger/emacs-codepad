@@ -28,8 +28,8 @@
 
 ;; This code can be used to paste code to codepad.org.
 
-;; codepad-paste-region pastes a region to codepad.org. The URL is printed,
-;; returned and if codepad-view is T opened in the browser.
+;; codepad-paste-region pastes a region to codepad.org. The URL is printed
+;; and if codepad-view is T opened in the browser.
 ;;
 ;; codepad-paste-buffer pastes the whole buffer.
 
@@ -149,16 +149,17 @@ should both be strings."
              ("private" . ,(codepad-true-or-false private))
              ("run" . ,(codepad-true-or-false run))
              ("lang" . ,lang)
-             ("code" . ,(buffer-substring begin end)))))
-         (buffer (url-retrieve-synchronously +codepad-url+)))
-    (with-current-buffer buffer
-      (re-search-backward "^Location: \\(.*\\)$")
-      (message "Paste created: %s" (match-string 1))
-      (let ((url (concat +codepad-url+ (match-string 1))))
-        (when codepad-view (browse-url url))
-        (kill-new url)
-        (kill-buffer (current-buffer))
-        url))))
+             ("code" . ,(buffer-substring begin end))))))
+    (url-retrieve +codepad-url+
+                  (lambda (&rest _)
+                    (goto-char (point-min))
+                    (re-search-forward "^[lL]ocation: \\(.*\\)$")
+                    (message "Paste created: %s" (match-string 1))
+                    (let ((url (concat +codepad-url+ (match-string 1))))
+                      (when codepad-view (browse-url url))
+                      (kill-new url)
+                      ;(kill-buffer (current-buffer))
+                      url)))))
 
 ;;;###autoload
 (defun codepad-paste-buffer (&optional private)
