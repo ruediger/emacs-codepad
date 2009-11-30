@@ -220,6 +220,8 @@ in the case of success or ERR is an error descriptor."
 
 (defvar url-http-content-type)
 
+(defvar codepad-id nil "ID on Codepad or nil. Buffer local.")
+
 ;;;###autoload
 (defun codepad-fetch-code (id &optional buffer-name)
   "Fetch code from codepad.org.
@@ -235,8 +237,13 @@ optional argument is the BUFFER-NAME where to write."
       (setq buffer (url-retrieve-synchronously url))
       (with-current-buffer buffer
         (rename-buffer buffer-name t)
+
+        ;; set codepad-id to the id
+        (make-local-variable 'codepad-id)
+        (setq codepad-id just-id)
+
         (goto-char (point-min))
-        (re-search-forward "\n\n")
+        (re-search-forward "\n\n") ; Find end of Headers
         (let ((header-end (point)))
           (goto-char (point-min))
           ;; Determine and set mode
