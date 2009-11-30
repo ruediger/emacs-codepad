@@ -232,32 +232,41 @@ optional argument is the BUFFER-NAME where to write."
          (buffer-name (or buffer-name (format "*codepad %s*" just-id)))
          (url (concat +codepad-url+ "/" just-id "/raw"))
          (buffer (get-buffer buffer-name)))
-    (unless (bufferp buffer)
-      (message "Fetching %s from Codepad" just-id)
-      (setq buffer (url-retrieve-synchronously url))
-      (with-current-buffer buffer
-        (rename-buffer buffer-name t)
+    (if (bufferp buffer)
+        (pop-to-buffer buffer)
 
-        ;; set codepad-id to the id
-        (make-local-variable 'codepad-id)
-        (setq codepad-id just-id)
+        (message "Fetching %s from Codepad" just-id)
+        (url-retrieve url
+         (lambda (status buffer-name just-id)
+           (let ((err (plist-get status :error)))
+             (when err
+               (signal (car err) (cdr err))))
+           (rename-buffer buffer-name t)
+           
+           ;; set codepad-id to the id
+           (make-local-variable 'codepad-id)
+           (setq codepad-id just-id)
 
-        (goto-char (point-min))
-        (re-search-forward "\n\n") ; Find end of Headers
-        (let ((header-end (point)))
-          (goto-char (point-min))
-          ;; Determine and set mode
-          (when (and codepad-autoset-mode
-                     url-http-content-type
-                     (string-match "text/x-\\([^;[:space:]]*\\)" url-http-content-type))
-            (let ((mode (cdr (assoc (match-string 1 url-http-content-type)
-                                    +codepad-mime-to-mode+))))
-              (when mode
-                (funcall mode))))
-          ;; Delete Headers
-          (delete-region (point-min) header-end)
-          (set-buffer-modified-p nil))))
-    (pop-to-buffer buffer)))
+           (goto-char (point-min))
+           (re-search-forward "\n\n") ; Find end of Headers
+           (let ((header-end (point)))
+             (goto-char (point-min))
+             ;; Determine and set mode
+             (when (and codepad-autoset-mode
+                        url-http-content-type
+                        (string-match "text/x-\\([^;[:space:]]*\\)"
+                                      url-http-content-type))
+               (let ((mode
+                      (cdr (assoc
+                            (match-string 1 url-http-content-type)
+                            +codepad-mime-to-mode+))))
+                 (when mode
+                   (funcall mode))))
+             ;; Delete Headers
+             (delete-region (point-min) header-end)
+             (set-buffer-modified-p nil)
+             (pop-to-buffer (current-buffer))))
+         (list buffer-name just-id)))))
 
 (provide 'codepad)
 ;;; codepad.el ends here
