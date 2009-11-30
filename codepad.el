@@ -65,7 +65,7 @@
   "Association of major-modes to language names used by codepad.org.")
 
 (defconst +codepad-default-lang+ "Plain Text"
-  "Language of `major-mode' is not supported by codepad.org.")
+  "Language if `major-mode' is not supported by codepad.org.")
 
 (defgroup codepad nil
   "Codepad paste support"
