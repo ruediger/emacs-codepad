@@ -94,6 +94,11 @@
   :group 'codepad
   :type 'boolean)
 
+(defcustom codepad-async t
+  "Async retreive"
+  :group 'codepad
+  :type 'boolean)
+
 (defun codepad-read-p (prompt &optional default)
   "reads true (t,y,true,yes) or false (nil,false,no) from the minibuffer"
   (let ((val (downcase (read-string (concat prompt " [default '" (if default "Yes" "No") "']: ")))))
@@ -144,7 +149,7 @@ should both be strings."
     url))
 
 ;;;###autoload
-(defun codepad-paste-region (begin end &optional private synchronously)
+(defun* codepad-paste-region (begin end &optional private (synchronously 'check-custom))
   "paste region to codepad.org"
   (interactive "r")
   (let* ((private (codepad-interactive-option (or private codepad-private) "Private Paste?"))
@@ -161,13 +166,15 @@ should both be strings."
              ("run" . ,(codepad-true-or-false run))
              ("lang" . ,lang)
              ("code" . ,(buffer-substring begin end))))))
+    (when (eql synchronously 'check-custom)
+        (setq synchronously (not codepad-async)))
     (if synchronously
         (with-current-buffer (url-retrieve-synchronously +codepad-url+)
           (codepad-paste-callback))
         (url-retrieve +codepad-url+ #'codepad-paste-callback))))
 
 ;;;###autoload
-(defun codepad-paste-buffer (&optional private synchronously)
+(defun* codepad-paste-buffer (&optional private (synchronously 'check-custom))
   "paste buffer to codepad.org"
   (interactive)
   (codepad-paste-region (point-min) (point-max) private synchronously))
