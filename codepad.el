@@ -132,8 +132,19 @@ should both be strings."
              (codepad-hexify-string (cdr param))))
    params "&"))
 
+(defun codepad-paste-callback (&rest _)
+  "callback called by url-retrieve or after a synced retreive"
+  (goto-char (point-min))
+  (re-search-forward "^[lL]ocation: \\(.*\\)$")
+  (message "Paste created: %s" (match-string 1))
+  (let ((url (concat +codepad-url+ (match-string 1))))
+    (when codepad-view (browse-url url))
+    (kill-new url)
+    (kill-buffer (current-buffer))
+    url))
+
 ;;;###autoload
-(defun codepad-paste-region (begin end &optional private)
+(defun codepad-paste-region (begin end &optional private synchronously)
   "paste region to codepad.org"
   (interactive "r")
   (let* ((private (codepad-interactive-option (or private codepad-private) "Private Paste?"))
@@ -150,22 +161,16 @@ should both be strings."
              ("run" . ,(codepad-true-or-false run))
              ("lang" . ,lang)
              ("code" . ,(buffer-substring begin end))))))
-    (url-retrieve +codepad-url+
-                  (lambda (&rest _)
-                    (goto-char (point-min))
-                    (re-search-forward "^[lL]ocation: \\(.*\\)$")
-                    (message "Paste created: %s" (match-string 1))
-                    (let ((url (concat +codepad-url+ (match-string 1))))
-                      (when codepad-view (browse-url url))
-                      (kill-new url)
-                      (kill-buffer (current-buffer))
-                      url)))))
+    (if synchronously
+        (with-current-buffer (url-retrieve-synchronously +codepad-url+)
+          (codepad-paste-callback))
+        (url-retrieve +codepad-url+ #'codepad-paste-callback))))
 
 ;;;###autoload
-(defun codepad-paste-buffer (&optional private)
+(defun codepad-paste-buffer (&optional private synchronously)
   "paste buffer to codepad.org"
   (interactive)
-  (codepad-paste-region (point-min) (point-max) private))
+  (codepad-paste-region (point-min) (point-max) private synchronously))
 
 ;;;###autoload
 (defun codepad-fetch (id))
