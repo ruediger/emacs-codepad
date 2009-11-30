@@ -29,7 +29,7 @@
 
 ;; This code can be used to paste code to codepad.org.
 
-;; codepad-paste-region pastes a region to codepad.org. The URL is printed
+;; codepad-paste-region pastes a region to codepad.org.  The URL is printed
 ;; and if codepad-view is T opened in the browser.
 ;;
 ;; codepad-paste-buffer pastes the whole buffer.
@@ -49,7 +49,7 @@
 ;;; Code:
 
 (defconst +codepad-url+ "http://codepad.org"
-  "url to codepad.org")
+  "Url to codepad.org.")
 
 (defconst +codepad-lang+ '((c-mode . "C")
                            (c++-mode . "C++")
@@ -63,10 +63,10 @@
                            (ruby-mode . "Ruby")
                            (scheme-mode . "Scheme")
                            (tcl-mode . "Tcl"))
-  "association of major-modes to language names used by codepad.org")
+  "Association of major-modes to language names used by codepad.org.")
 
 (defconst +codepad-default-lang+ "Plain Text"
-  "language of major-mode is not supported by codepad.org")
+  "Language of `major-mode' is not supported by codepad.org.")
 
 (defgroup codepad nil
   "Codepad paste support"
@@ -99,12 +99,13 @@
   :type 'boolean)
 
 (defcustom codepad-async t
-  "Async retreive"
+  "Async retreive."
   :group 'codepad
   :type 'boolean)
 
 (defun codepad-read-p (prompt &optional default)
-  "reads true (t,y,true,yes) or false (nil,false,no) from the minibuffer"
+  "Read true (t,y,true,yes) or false (nil,false,no) from the minibuffer.
+Uses PROMPT as prompt and DEFAULT is the default value."
   (let ((val (downcase (read-string (concat prompt " [default '"
                                             (if default "Yes" "No") "']: ")))))
     (cond
@@ -116,7 +117,7 @@
          (codepad-read-p prompt default)))))
 
 (defun codepad-interactive-option (var prompt)
-  "handle interactive option"
+  "Handle interactive option for VAR.  Use PROMPT if user is asked."
   (case var
     ((ask) (codepad-read-p prompt))
     ((no) nil)
@@ -125,19 +126,19 @@
     (t var)))
 
 (defun codepad-true-or-false (val)
-  "converts `val' into a string True or False"
+  "Convert VAL into a string True or False."
   (if val
       "True"
       "False"))
 
-(defun codepad-hexify-string (string)
-  "like url-hexify-string but space is turned into +"
+(defun codepad-url-encode (string)
+  "Encode STRING.  Like `url-hexify-string' but space is turned into +."
   (replace-regexp-in-string "%20" "+" (url-hexify-string string)))
 
 ;; copied from gist.el
 (defun codepad-make-query-string (params)
-  "Returns a query string constructed from PARAMS, which should be
-a list with elements of the form (KEY . VALUE). KEY and VALUE
+  "Return a query string constructed from PARAMS.
+PARAMS should be a list with elements of the form (KEY . VALUE).  KEY and VALUE
 should both be strings."
   (mapconcat
    (lambda (param)
@@ -146,7 +147,7 @@ should both be strings."
    params "&"))
 
 (defun codepad-paste-callback (&rest _)
-  "callback called by url-retrieve or after a synced retreive"
+  "Callback called by url-retrieve or after a synced retreive."
   (goto-char (point-min))
   (re-search-forward "^[lL]ocation: \\(.*\\)$")
   (let ((url (concat +codepad-url+ (match-string 1))))
@@ -157,10 +158,10 @@ should both be strings."
     url))
 
 ;;;###autoload
-(defun* codepad-paste-region (begin end 
+(defun* codepad-paste-region (begin end
                               &optional (private 'check-custom)
                                         (synchronously 'check-custom))
-  "paste region to codepad.org"
+  "Paste region to codepad.org."
   (interactive "r")
   (let* ((private (codepad-interactive-option (if (eql private 'check-custom)
                                                   codepad-private
@@ -174,7 +175,7 @@ should both be strings."
          (url-request-extra-headers
           '(("Content-type" . "application/x-www-form-urlencoded")))
          (url-request-data
-          (codepad-make-query-string 
+          (codepad-make-query-string
            `(("submit" . "Submit")
              ("private" . ,(codepad-true-or-false private))
              ("run" . ,(codepad-true-or-false run))
@@ -191,12 +192,12 @@ should both be strings."
 (defun* codepad-paste-buffer (&optional
                               (private 'check-custom)
                               (synchronously 'check-custom))
-  "paste buffer to codepad.org"
+  "Paste buffer to codepad.org."
   (interactive)
   (codepad-paste-region (point-min) (point-max) private synchronously))
 
 ;;;###autoload
-(defun codepad-fetch (id))
+;(defun codepad-fetch (id))
 
 (provide 'codepad)
 ;;; codepad.el ends here
