@@ -247,27 +247,26 @@ optional argument is the BUFFER-NAME where to write."
            (make-local-variable 'codepad-id)
            (setq codepad-id just-id)
 
+           ;; Delete Headers
            (goto-char (point-min))
            (re-search-forward "\n\n") ; Find end of Headers
-           (let ((header-end (point)))
-             (goto-char (point-min))
-             ;; Determine and set mode
-             (if (and codepad-autoset-mode
-                        url-http-content-type
-                        (string-match "text/x-\\([^;[:space:]]*\\)"
-                                      url-http-content-type))
+           (delete-region (point-min) (point))
+
+           ;; Determine and set mode
+           (if (and codepad-autoset-mode
+                    url-http-content-type
+                    (string-match "text/x-\\([^;[:space:]]*\\)"
+                                  url-http-content-type))
                (let ((mode
                       (cdr (assoc
                             (match-string 1 url-http-content-type)
                             +codepad-mime-to-mode+))))
                  (if mode
-                   (funcall mode)
-                   (fundamental-mode)))
+                     (funcall mode)
+                     (fundamental-mode)))
                (fundamental-mode))
-             ;; Delete Headers
-             (delete-region (point-min) header-end)
-             (set-buffer-modified-p nil)
-             (pop-to-buffer (current-buffer))))
+           (set-buffer-modified-p nil)
+           (pop-to-buffer (current-buffer)))
          (list buffer-name just-id)))))
 
 (provide 'codepad)
