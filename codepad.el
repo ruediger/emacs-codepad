@@ -42,8 +42,8 @@
 
 ;;; Idea:
 
-;; add a local variable to each buffer with (a list?) of codepad ids so you new pastes
-;; from this buffer are added as a reply to the original paste.
+;; add a local variable to each buffer with (a list?) of codepad ids so you
+;; new pastes from this buffer are added as a reply to the original paste.
 
 ;;; Code:
 
@@ -101,12 +101,14 @@
 
 (defun codepad-read-p (prompt &optional default)
   "reads true (t,y,true,yes) or false (nil,false,no) from the minibuffer"
-  (let ((val (downcase (read-string (concat prompt " [default '" (if default "Yes" "No") "']: ")))))
+  (let ((val (downcase (read-string (concat prompt " [default '"
+                                            (if default "Yes" "No") "']: ")))))
     (cond
       ((string= val "") default)
       ((member val '("t" "y" "true" "yes")) t)
       ((member val '("nil" "f" "n" "false" "no")) nil)
-      (t (message (concat "Wrong input '" val "'! Please enter either Yes or No"))
+      (t (message (concat "Wrong input '" val
+                          "'! Please enter either Yes or No"))
          (codepad-read-p prompt default)))))
 
 (defun codepad-interactive-option (var prompt)
@@ -149,16 +151,22 @@ should both be strings."
     url))
 
 ;;;###autoload
-(defun* codepad-paste-region (begin end &optional private (synchronously 'check-custom))
+(defun* codepad-paste-region (begin end 
+                              &optional (private 'check-custom)
+                                        (synchronously 'check-custom))
   "paste region to codepad.org"
   (interactive "r")
-  (let* ((private (codepad-interactive-option (or private codepad-private) "Private Paste?"))
+  (let* ((private (codepad-interactive-option (if (eql private 'check-custom)
+                                                  codepad-private
+                                                  private)
+                                              "Private Paste?"))
          (lang (or (cdr (assoc major-mode +codepad-lang+))
                    +codepad-default-lang+))
          (run (codepad-interactive-option codepad-run "Run Paste?"))
          (url-max-redirections 0)
          (url-request-method "POST")
-         (url-request-extra-headers '(("Content-type" . "application/x-www-form-urlencoded")))
+         (url-request-extra-headers
+          '(("Content-type" . "application/x-www-form-urlencoded")))
          (url-request-data
           (codepad-make-query-string 
            `(("submit" . "Submit")
@@ -174,7 +182,9 @@ should both be strings."
         (url-retrieve +codepad-url+ #'codepad-paste-callback))))
 
 ;;;###autoload
-(defun* codepad-paste-buffer (&optional private (synchronously 'check-custom))
+(defun* codepad-paste-buffer (&optional
+                              (private 'check-custom)
+                              (synchronously 'check-custom))
   "paste buffer to codepad.org"
   (interactive)
   (codepad-paste-region (point-min) (point-max) private synchronously))
