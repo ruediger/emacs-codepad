@@ -13,6 +13,8 @@ codepad.el is based on gist.el (http://github.com/defunkt/gist.el/blob/master/gi
 Thanks to Thomas Weidner <thomas001le@gmail.com> for his patches and help.
 
 == Installation ==
+I'm using Emacs 23.1. codepad.el has problems with older versions of Emacs (url.el)! If codepad.el won't work please upgrade your Emacs.
+
 Installation is straight forward:
 
 Add the following lines to your ~/.emacs
