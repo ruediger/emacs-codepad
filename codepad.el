@@ -43,6 +43,8 @@
 
 ;;; Code:
 
+(require 'cl)
+
 (defconst +codepad-url+ "http://codepad.org"
   "Url to codepad.org.")
 
@@ -107,6 +109,8 @@
   "Copy URL also to the X clipboard?"
   :group 'codepad
   :type 'boolean)
+
+(defvar codepad-id nil "ID on Codepad or nil. Buffer local.")
 
 (defun codepad-read-p (prompt &optional default)
   "Read true (t,y,true,yes) or false (nil,false,no) from the minibuffer.
@@ -235,8 +239,6 @@ URL is the resulted url in the case of success or ERR is an error descriptor."
 ;; stuff from url-http.el
 (defvar url-http-content-type)
 (defvar url-http-end-of-headers)
-
-(defvar codepad-id nil "ID on Codepad or nil. Buffer local.")
 
 ;;;###autoload
 (defun codepad-fetch-code (id &optional buffer-name)
