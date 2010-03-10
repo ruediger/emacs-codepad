@@ -8,7 +8,7 @@ emacs-codepad provides an Emacs integration for Codepad. Currently you can use i
 
 Contributors are welcome!
 
-codepad.el is based on gist.el (http://github.com/defunkt/gist.el/blob/master/gist.el) which was written by Christian Neukirchen and others. codepad.el is written by Rüdiger Sonderfeld. You can contact me via E-Mail: ruediger@c-plusplus.de.
+codepad.el is based on gist.el ( http://github.com/defunkt/gist.el/blob/master/gist.el ) which was written by Christian Neukirchen and others. codepad.el is written by Rüdiger Sonderfeld. You can contact me via E-Mail: ruediger@c-plusplus.de.
 
 Thanks to Thomas Weidner <thomas001le@gmail.com> for his patches and help.
 
