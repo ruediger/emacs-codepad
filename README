@@ -28,4 +28,4 @@ Restart Emacs (or evaluate those lines) and you can use codepad.el by calling M-
 
 You can configure codepad.el by calling M-x customize-group codepad
 
-Good news Gentoo users: codepad.el is currently part of Gentoo's Emacs Overlays (http://overlays.gentoo.org/proj/emacs/browser/emacs-overlay/app-emacs/codepad) and it will move to the official tree in the near future.
+Good news Gentoo users: codepad.el is currently part of Gentoo's Emacs Overlays ( http://overlays.gentoo.org/proj/emacs/browser/emacs-overlay/app-emacs/codepad ) and it will move to the official tree in the near future.
