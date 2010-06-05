@@ -10,7 +10,7 @@ Contributors are welcome!
 
 codepad.el is based on gist.el ( http://github.com/defunkt/gist.el/blob/master/gist.el ) which was written by Christian Neukirchen and others. codepad.el is written by Rüdiger Sonderfeld. You can contact me via E-Mail: ruediger@c-plusplus.de.
 
-Thanks to Thomas Weidner <thomas001le@gmail.com> for his patches and help.
+Thanks to Thomas Weidner <thomas001le@gmail.com> for his patches and help. Thanks to Lorenzo Villani <lvillani@binaryhelix.net> for fixing the "error in process filter: Symbol's value as variable is void: url-max-redirections" issue.
 
 == Installation ==
 I'm using Emacs 23.1. codepad.el has problems with older versions of Emacs (url.el)! If codepad.el won't work please upgrade your Emacs.
