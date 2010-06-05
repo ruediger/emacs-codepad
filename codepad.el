@@ -44,6 +44,7 @@
 ;;; Code:
 
 (require 'cl)
+(require 'url-http)
 
 (defconst +codepad-url+ "http://codepad.org"
   "Url to codepad.org.")
@@ -229,7 +230,7 @@ URL is the resulted url in the case of success or ERR is an error descriptor."
                                    ("lua" . lua-mode)
                                    ("ocaml" . ocaml-mode)
                                    ("php" . php-mode)
-                                   ("perl" . perl-mode)                                   
+                                   ("perl" . perl-mode)
                                    ("python" . python-mode)
                                    ("ruby" . ruby-mode)
                                    ("scheme" . scheme-mode)
@@ -260,7 +261,7 @@ optional argument is the BUFFER-NAME where to write."
              (when err
                (signal (car err) (cdr err))))
            (rename-buffer buffer-name t)
-           
+
            ;; set codepad-id to the id
            (make-local-variable 'codepad-id)
            (setq codepad-id just-id)
